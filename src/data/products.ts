@@ -32,20 +32,20 @@ export const products = JSON.stringify([
     "producto": "Cemento",
     "cantidad": "100",
     "unidad": "Kilogramo",
-    "description": "Tornillo del #6"
+    "descripcion": "Cemento blanco"
   },
   {
     "id": "6",
-    "producto": "Aguaras",
+    "producto": "Aguarras",
     "cantidad": "100",
     "unidad": "litro",
-    "description": "Tornillo del #6"
+    "descripcion": "Aguarras en botella"
   },
   {
     "id": "7",
-    "product": "Mangera Electrica",
-    "quantity": "30",
+    "producto": "Mangera Electrica",
+    "cantidad": "30",
     "unidad": "metro",
-    "description": "Tornillo del #6"
+    "descripcion": "Manguera para electricidad 20mm"
   }
 ])

@@ -1,9 +1,4 @@
 import { createContext } from 'react'
-import { ProductDispatcher } from '../types'
+import { ProductsDataContext } from '../types'
 
-export const ProductContext = createContext(
-  {
-    producstList: [],
-    setProductsList: ()=>{}
-  } as unknown as ProductDispatcher
-)
+export const ProductContext = createContext<ProductsDataContext | undefined> (undefined)

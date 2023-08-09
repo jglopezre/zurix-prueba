@@ -3,14 +3,21 @@ import { ProductCard } from './ProductCard'
 import { useContext } from 'react'
 import { ProductContext } from '../context/ProductContext'
 
-
 export const ProductsList = (): JSX.Element => {
-  const {productsList} = useContext( ProductContext )
+  const productsProvided = useContext( ProductContext )
 
-  console.log(productsList)
   return (
     <Stack spacing={2}>
-      { productsList.map( product => <ProductCard product={product} key={product.id} /> ) }
+      { 
+        productsProvided?.productsList.map( product => {
+          return(
+            <ProductCard 
+              product={product}
+              dispatch = {productsProvided.dispatch}
+              key={product.id} />
+          )
+        }).reverse()
+      }
     </Stack>
   )
 }

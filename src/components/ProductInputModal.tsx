@@ -1,12 +1,13 @@
 import { Box, Button, Dialog, DialogContent, DialogTitle, MenuItem, SxProps, TextField, TextFieldProps, Theme } from "@mui/material"
 import { Product, ProductsInputForm } from "../types"
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { ProductContext } from "../context/ProductContext"
 
 enum Unity {
   UNITY = "unidad",
   KILOGRAM = "kilogramo",
   LITER = "litro",
-  METTER = "metro"
+  METER = "metro"
 }
 
 const mainBoxConfig: SxProps<Theme> = {
@@ -64,14 +65,22 @@ const unities = [
     label: Unity.LITER
   },
   {
-    value: Unity.METTER,
-    label: Unity.METTER
+    value: Unity.METER,
+    label: Unity.METER
   }
 ]
 
 export const ProductInputModal = (props: ProductsInputForm): JSX.Element => {
+  const {isOpen, setIsOpen, mode, product} = props
 
+  const productsProvided = useContext( ProductContext )
   const [productInputData, setProductInputData] = useState({} as Product)
+
+  const onModalMode = mode === 'CREATE'
+  ? () => productsProvided?.dispatch({type: 'ADD_PRODUCT', payload: productInputData})
+  : mode === "MODIFY"
+  ? () => productsProvided?.dispatch({type: 'MODIFY_PRDUCT', payload: productInputData})
+  : () => console.warn(`Modal Mode value is invalid. modalMode = ${mode}`)
 
   const productChangeHandle = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     setProductInputData((productData) => {
@@ -81,7 +90,7 @@ export const ProductInputModal = (props: ProductsInputForm): JSX.Element => {
 
   const quantityChangeHandle = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     setProductInputData((productData) => {
-      return { ...productData, cantidad: parseInt(event.target.value) }
+      return { ...productData, cantidad: Number(event.target.value) > 0 ? parseInt(event.target.value) : 0 }
     })
   }
 
@@ -93,25 +102,25 @@ export const ProductInputModal = (props: ProductsInputForm): JSX.Element => {
 
   const descriptionChangeHandle = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     setProductInputData((productData) => {
-      return { ...productData, description: event.target.value }
+      return { ...productData, descripcion: event.target.value }
     })
   }
 
   const onAccept = () => {
-    console.log(productInputData)
-    props.setIsOpen(false)
+    onModalMode()
+    setIsOpen(false)
   }
 
   return (
-    <Dialog open={props.isOpen}>
+    <Dialog open={isOpen}>
       <Box sx={mainBoxConfig} component="form">
         <DialogTitle>Agrega un nuevo producto</DialogTitle>
         <DialogContent>
           Ingresa los datos para crear un nuevo producto
         </DialogContent>
-        <TextField {...productFieldConfig} onChange={productChangeHandle}/>
-        <TextField {...quantityFieldConfig} onChange={quantityChangeHandle}/>
-        <TextField {...unityFieldConfig} onChange={unityChangeHandle}>
+        <TextField {...productFieldConfig} onChange={productChangeHandle} defaultValue={mode === 'MODIFY' ? product?.producto : ''} />
+        <TextField {...quantityFieldConfig} onChange={quantityChangeHandle} defaultValue={mode === 'MODIFY' ? product?.cantidad : 0} />
+        <TextField {...unityFieldConfig} onChange={unityChangeHandle} defaultValue={mode === 'MODIFY' ? product?.unidad : Unity.UNITY} >
           {
             unities.map((option) => (
               <MenuItem key={option.value} value={option.value}>
@@ -120,7 +129,7 @@ export const ProductInputModal = (props: ProductsInputForm): JSX.Element => {
             ))
           }
         </TextField>
-        <TextField {...DescriptionFieldConfig} onChange={descriptionChangeHandle}/>
+        <TextField {...DescriptionFieldConfig} onChange={descriptionChangeHandle} defaultValue={mode === 'MODIFY' ? product?.descripcion : ''}/>
         <Button onClick={ () => props.setIsOpen(false) }>Cancelar</Button>
         <Button onClick={ () => onAccept() }>Aceptar</Button>
       </Box>
