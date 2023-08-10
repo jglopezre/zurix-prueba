@@ -1,13 +1,13 @@
 import { useState } from "react"
-import { ModalMode, ModalModeSetProvider } from "../types"
+import { ModalModeData, ModalModeSetProvider } from "../types"
 import { ModalModeContext } from "./ModalModeContext"
 
 export const ModalModeProvider = (props: ModalModeSetProvider) => {
-  const [modalMode, setModalMode] = useState<ModalMode>("NONE")
+  const [ modalModeData, setModalModeData ] = useState<ModalModeData>({ mode: 'CREATE', isOpen: false })
 
   return(
-    <ModalModeContext.Provider value={{modalMode, setModalMode}}> 
-      {props.children}
+    <ModalModeContext.Provider value={{ modalModeData, setModalModeData }}> 
+      { props.children }
     </ModalModeContext.Provider>
   )
 }

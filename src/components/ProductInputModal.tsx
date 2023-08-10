@@ -1,7 +1,8 @@
-import { Box, Button, Dialog, DialogContent, DialogTitle, MenuItem, SxProps, TextField, TextFieldProps, Theme } from "@mui/material"
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, TextField, TextFieldProps } from "@mui/material"
 import { Product, ProductsInputForm } from "../types"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { ProductContext } from "../context/ProductContext"
+import { ModalModeContext } from "../context/ModalModeContext"
 
 enum Unity {
   UNITY = "unidad",
@@ -10,10 +11,15 @@ enum Unity {
   METER = "metro"
 }
 
-const mainBoxConfig: SxProps<Theme> = {
-  p: 4
+const emptyProduct: Product = {
+  id: "XXXX",
+  producto: "",
+  cantidad: 0,
+  unidad: Unity.UNITY,
+  descripcion: ""
 }
 
+//Textfields Configurations
 const productFieldConfig: TextFieldProps = {
   autoFocus: true,
   margin: "dense",
@@ -71,10 +77,21 @@ const unities = [
 ]
 
 export const ProductInputModal = (props: ProductsInputForm): JSX.Element => {
-  const {isOpen, setIsOpen, mode, product} = props
+  //const { isOpen, setIsOpen } = props
 
+  const modalModeDataProvided = useContext(ModalModeContext)
+
+  const mode = modalModeDataProvided.modalModeData.mode
+  const product = modalModeDataProvided.modalModeData.product
+  const isOpen = modalModeDataProvided.modalModeData.isOpen
+  const setModalModeData = modalModeDataProvided.setModalModeData
   const productsProvided = useContext( ProductContext )
-  const [productInputData, setProductInputData] = useState({} as Product)
+  const [ productInputData, setProductInputData ] = useState( product ?? emptyProduct )
+
+  useEffect(() => {
+    if(mode === 'MODIFY') setProductInputData(product ?? emptyProduct)
+  }, [mode])
+  
 
   const onModalMode = mode === 'CREATE'
   ? () => productsProvided?.dispatch({type: 'ADD_PRODUCT', payload: productInputData})
@@ -108,19 +125,23 @@ export const ProductInputModal = (props: ProductsInputForm): JSX.Element => {
 
   const onAccept = () => {
     onModalMode()
-    setIsOpen(false)
+    if(mode === 'CREATE') {
+      setModalModeData({ mode: 'CREATE', isOpen: false })
+    } else if (mode === 'MODIFY') {
+      setModalModeData({ mode: 'MODIFY', isOpen: false, product: product ?? emptyProduct })
+    }
   }
 
   return (
     <Dialog open={isOpen}>
-      <Box sx={mainBoxConfig} component="form">
-        <DialogTitle>Agrega un nuevo producto</DialogTitle>
-        <DialogContent>
+      <DialogTitle>Agrega un nuevo producto</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
           Ingresa los datos para crear un nuevo producto
-        </DialogContent>
-        <TextField {...productFieldConfig} onChange={productChangeHandle} defaultValue={mode === 'MODIFY' ? product?.producto : ''} />
-        <TextField {...quantityFieldConfig} onChange={quantityChangeHandle} defaultValue={mode === 'MODIFY' ? product?.cantidad : 0} />
-        <TextField {...unityFieldConfig} onChange={unityChangeHandle} defaultValue={mode === 'MODIFY' ? product?.unidad : Unity.UNITY} >
+        </DialogContentText>
+        <TextField {...productFieldConfig} onChange={productChangeHandle} defaultValue={mode === 'MODIFY' ? product?.producto : emptyProduct.producto} />
+        <TextField {...quantityFieldConfig} onChange={quantityChangeHandle} defaultValue={mode === 'MODIFY' ? product?.cantidad : emptyProduct.cantidad} />
+        <TextField {...unityFieldConfig} onChange={unityChangeHandle} defaultValue={mode === 'MODIFY' ? product?.unidad : emptyProduct.unidad} >
           {
             unities.map((option) => (
               <MenuItem key={option.value} value={option.value}>
@@ -129,10 +150,12 @@ export const ProductInputModal = (props: ProductsInputForm): JSX.Element => {
             ))
           }
         </TextField>
-        <TextField {...DescriptionFieldConfig} onChange={descriptionChangeHandle} defaultValue={mode === 'MODIFY' ? product?.descripcion : ''}/>
+        <TextField {...DescriptionFieldConfig} onChange={descriptionChangeHandle} defaultValue={mode === 'MODIFY' ? product?.descripcion : emptyProduct.descripcion}/>
+      </DialogContent>
+      <DialogActions>
         <Button onClick={ () => props.setIsOpen(false) }>Cancelar</Button>
         <Button onClick={ () => onAccept() }>Aceptar</Button>
-      </Box>
+      </DialogActions>
     </Dialog>
   )
 }

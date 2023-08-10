@@ -13,14 +13,23 @@ export interface ProductCardProps {
 export interface ProductsInputForm {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  mode: ModalMode
-  product?: Product
 }
 
 export interface ModalModeSetProvider {
   children: JSX.Element
 }
 
+export interface DeleteWarningAdviceProps {
+  isOpen: boolean
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  producName: string
+  onConfirm: () => void
+}
+
+export interface AppViewHeadersProps {
+  title: string
+  setState: React.Dispatch<React.SetStateAction<boolean>>
+}
 //Types and Interfaces for productsListReducer
 export interface Product {
   id: string
@@ -31,7 +40,7 @@ export interface Product {
 }
 
 export type ProductAction = 
-  | { type: 'ADD_PRODUCT', payload: Product }
+  { type: 'ADD_PRODUCT', payload: Product }
   | { type: 'MODIFY_PRDUCT', payload: Product }
   | { type: 'DELETE_PRODUCT', payload: string }
 
@@ -45,9 +54,12 @@ export interface ProductsDataContext {
 }
 
 //Types and interfaces of Model Mode
-export type ModalMode = 'CREATE' | 'MODIFY' | 'NONE'
+//export type ModalMode = 'CREATE' | 'MODIFY' | 'NONE'
+export type ModalModeData = 
+    {mode: 'CREATE', isOpen: boolean, product?: Product }
+  | {mode: 'MODIFY', isOpen: boolean, product: Product }
 
 export interface ModalModeSetContext {
-  modalMode: ModalMode
-  setModalMode: React.Dispatch<React.SetStateAction<ModalMode>>
+  modalModeData: ModalModeData
+  setModalModeData: React.Dispatch<React.SetStateAction<ModalModeData>>
 }

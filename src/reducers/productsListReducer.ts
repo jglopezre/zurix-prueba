@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
 import { ProductAction, ProductList } from "../types"
- 
 
 export const productListReducer = (state: ProductList, action: ProductAction) => {
   switch (action.type) {
@@ -11,7 +10,11 @@ export const productListReducer = (state: ProductList, action: ProductAction) =>
       return state.filter(product => product.id !== action.payload)
 
     case "MODIFY_PRDUCT":
-      throw new Error(`Action MODIFY in productListReducer has not implemented yet`)
+      console.log(`Action Payload = ${action.payload}`)
+      return state.map( product => {
+        if(product.id === action.payload.id) return action.payload
+        return product
+      })
 
     default:
       return state

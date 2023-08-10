@@ -1,36 +1,27 @@
-import { Box, Button, Container, CssBaseline, Stack, SxProps, Theme, Typography } from "@mui/material"
+import { Container, CssBaseline } from "@mui/material"
 import { ProductProvider } from "./context/ProductProvider"
 import { ProductsList } from "./components/ProductsList"
 import { useState } from "react"
 import { ProductInputModal } from "./components/ProductInputModal"
-import { ModalMode } from "./types"
 import { ModalModeProvider } from "./context/ModalModeProvider"
+import { AppViewHeader } from "./components/AppViewHeader"
 
-const boxStyle: SxProps<Theme> = {
-
-}
 
 function App(): JSX.Element {
   const [inputFormIsOpen, setInputFormIsOpen] = useState(false)
-  const modalInputMode: ModalMode = 'MODIFY'
 
   return(
     <>
     <CssBaseline />
-      <ProductProvider>
-        <ModalModeProvider>
-          <Container>
-            <Box sx={boxStyle}>
-              <Stack spacing={3}>
-                <Typography variant="h1">Inventario</Typography>
-                <Button variant="contained" onClick={() => setInputFormIsOpen(true)}>Nuevo Producto</Button>
-              </Stack>
-              <ProductInputModal isOpen={ inputFormIsOpen } setIsOpen={ setInputFormIsOpen } mode={ modalInputMode } />
-              <ProductsList />
-            </Box>
-          </Container>
-        </ModalModeProvider>
-      </ProductProvider>
+    <ProductProvider>
+      <ModalModeProvider>
+        <Container>
+          <AppViewHeader title="inventario" setState={setInputFormIsOpen} />
+          <ProductInputModal isOpen={ inputFormIsOpen } setIsOpen={ setInputFormIsOpen } />
+          <ProductsList />
+        </Container>
+      </ModalModeProvider>
+    </ProductProvider>
     </>
   )
 }
