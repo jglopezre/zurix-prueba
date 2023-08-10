@@ -26,7 +26,6 @@ export const ProductCard = (props: ProductCardProps): JSX.Element => {
   }
 
   const onModifyHandle = () => {
-    console.log(props.product)
     modalModeDataProvided.setModalModeData({mode: 'MODIFY', isOpen: true , product: props.product})
   }
 

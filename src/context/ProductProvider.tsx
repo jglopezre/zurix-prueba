@@ -6,7 +6,7 @@ import { ProductsDataProvider } from '../types'
 
 export const ProductProvider = (props: ProductsDataProvider) => {
   const [productsList, dispatch] = useReducer(productListReducer, JSON.parse(products))
-  
+  console.log(productsList)
   return (
     <ProductContext.Provider value={{ productsList, dispatch }}>
       { props.children }

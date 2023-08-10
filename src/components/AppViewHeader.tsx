@@ -4,12 +4,11 @@ import { useContext } from "react"
 import { ModalModeContext } from "../context/ModalModeContext"
 
 export const AppViewHeader = (props: AppViewHeadersProps) => {
-  const { title, setState } = props
+  const { title } = props
   const modalModeDataProvided = useContext(ModalModeContext)
 
   const onButtonPressing = () => {
     modalModeDataProvided.setModalModeData({ mode: "CREATE", isOpen: true })
-    setState(true)
   }
 
   return (

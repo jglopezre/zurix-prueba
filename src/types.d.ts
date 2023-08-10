@@ -10,11 +10,6 @@ export interface ProductCardProps {
   dispatch: ProductReducerDispatch
 }
 
-export interface ProductsInputForm {
-  isOpen: boolean
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-}
-
 export interface ModalModeSetProvider {
   children: JSX.Element
 }
@@ -28,7 +23,6 @@ export interface DeleteWarningAdviceProps {
 
 export interface AppViewHeadersProps {
   title: string
-  setState: React.Dispatch<React.SetStateAction<boolean>>
 }
 //Types and Interfaces for productsListReducer
 export interface Product {

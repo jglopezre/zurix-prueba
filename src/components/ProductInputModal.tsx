@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, TextField, TextFieldProps } from "@mui/material"
-import { Product, ProductsInputForm } from "../types"
+import { Product } from "../types"
 import { useContext, useEffect, useState } from "react"
 import { ProductContext } from "../context/ProductContext"
 import { ModalModeContext } from "../context/ModalModeContext"
@@ -76,9 +76,7 @@ const unities = [
   }
 ]
 
-export const ProductInputModal = (props: ProductsInputForm): JSX.Element => {
-  //const { isOpen, setIsOpen } = props
-
+export const ProductInputModal = (): JSX.Element => {
   const modalModeDataProvided = useContext(ModalModeContext)
 
   const mode = modalModeDataProvided.modalModeData.mode
@@ -86,13 +84,17 @@ export const ProductInputModal = (props: ProductsInputForm): JSX.Element => {
   const isOpen = modalModeDataProvided.modalModeData.isOpen
   const setModalModeData = modalModeDataProvided.setModalModeData
   const productsProvided = useContext( ProductContext )
-  const [ productInputData, setProductInputData ] = useState( product ?? emptyProduct )
+
+  const [ productInputData, setProductInputData ] = useState<Product>( emptyProduct )
 
   useEffect(() => {
-    if(mode === 'MODIFY') setProductInputData(product ?? emptyProduct)
-  }, [mode])
+    console.log(product)
+    if(mode === 'MODIFY') {
+      setProductInputData(product ?? emptyProduct)
+    }
+  }, [mode, product])
   
-
+  
   const onModalMode = mode === 'CREATE'
   ? () => productsProvided?.dispatch({type: 'ADD_PRODUCT', payload: productInputData})
   : mode === "MODIFY"
@@ -125,15 +127,31 @@ export const ProductInputModal = (props: ProductsInputForm): JSX.Element => {
 
   const onAccept = () => {
     onModalMode()
-    if(mode === 'CREATE') {
+    setModalModeData((modalModeData) => {
+      return {
+        ...modalModeData,
+        isOpen: false,
+        product: product ?? emptyProduct
+      }
+    })
+    /* if(mode === 'CREATE') {
       setModalModeData({ mode: 'CREATE', isOpen: false })
     } else if (mode === 'MODIFY') {
       setModalModeData({ mode: 'MODIFY', isOpen: false, product: product ?? emptyProduct })
-    }
+    } */
+  }
+
+  const onCancel = () => {
+    setModalModeData((modalModeData) => {
+      return {
+        ...modalModeData,
+        isOpen: false
+      }
+    })
   }
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} >
       <DialogTitle>Agrega un nuevo producto</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -153,7 +171,7 @@ export const ProductInputModal = (props: ProductsInputForm): JSX.Element => {
         <TextField {...DescriptionFieldConfig} onChange={descriptionChangeHandle} defaultValue={mode === 'MODIFY' ? product?.descripcion : emptyProduct.descripcion}/>
       </DialogContent>
       <DialogActions>
-        <Button onClick={ () => props.setIsOpen(false) }>Cancelar</Button>
+        <Button onClick={ () => onCancel() }>Cancelar</Button>
         <Button onClick={ () => onAccept() }>Aceptar</Button>
       </DialogActions>
     </Dialog>
