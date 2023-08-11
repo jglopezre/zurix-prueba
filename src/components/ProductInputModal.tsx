@@ -3,6 +3,7 @@ import { Product } from "../types"
 import { useContext, useEffect, useState } from "react"
 import { ProductContext } from "../context/ProductContext"
 import { ModalModeContext } from "../context/ModalModeContext"
+import { SnackBarDataContext } from "../context/SnackBarDataContext"
 
 enum Unity {
   UNITY = "unidad",
@@ -83,23 +84,46 @@ export const ProductInputModal = (): JSX.Element => {
   const product = modalModeDataProvided.modalModeData.product
   const isOpen = modalModeDataProvided.modalModeData.isOpen
   const setModalModeData = modalModeDataProvided.setModalModeData
+  
   const productsProvided = useContext( ProductContext )
+  const alertDataProvided = useContext( SnackBarDataContext ) 
 
   const [ productInputData, setProductInputData ] = useState<Product>( emptyProduct )
 
   useEffect(() => {
-    console.log(product)
     if(mode === 'MODIFY') {
       setProductInputData(product ?? emptyProduct)
     }
   }, [mode, product])
-  
-  
-  const onModalMode = mode === 'CREATE'
-  ? () => productsProvided?.dispatch({type: 'ADD_PRODUCT', payload: productInputData})
-  : mode === "MODIFY"
-  ? () => productsProvided?.dispatch({type: 'MODIFY_PRDUCT', payload: productInputData})
-  : () => console.warn(`Modal Mode value is invalid. modalMode = ${mode}`)
+
+
+  const onAccept = () => {
+
+    switch(mode) {
+      case 'CREATE':
+        productsProvided?.dispatch({type: 'ADD_PRODUCT', payload: productInputData})
+        alertDataProvided.setData({ mode: 'created', name: productInputData.producto})
+        onCancel()
+        break
+      case 'MODIFY':
+        productsProvided?.dispatch({type: 'MODIFY_PRDUCT', payload: productInputData})
+        alertDataProvided.setData({ mode: 'modified', name: product?.producto ?? ''})
+        onCancel()
+        break
+      default:
+        console.warn(`mode: ${mode} is invalid`)
+        onCancel()
+    }
+  }
+
+  const onCancel = () => {
+    setModalModeData((modalModeData) => {
+      return {
+        ...modalModeData,
+        isOpen: false
+      }
+    })
+  }
 
   const productChangeHandle = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     setProductInputData((productData) => {
@@ -122,31 +146,6 @@ export const ProductInputModal = (): JSX.Element => {
   const descriptionChangeHandle = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     setProductInputData((productData) => {
       return { ...productData, descripcion: event.target.value }
-    })
-  }
-
-  const onAccept = () => {
-    onModalMode()
-    setModalModeData((modalModeData) => {
-      return {
-        ...modalModeData,
-        isOpen: false,
-        product: product ?? emptyProduct
-      }
-    })
-    /* if(mode === 'CREATE') {
-      setModalModeData({ mode: 'CREATE', isOpen: false })
-    } else if (mode === 'MODIFY') {
-      setModalModeData({ mode: 'MODIFY', isOpen: false, product: product ?? emptyProduct })
-    } */
-  }
-
-  const onCancel = () => {
-    setModalModeData((modalModeData) => {
-      return {
-        ...modalModeData,
-        isOpen: false
-      }
     })
   }
 

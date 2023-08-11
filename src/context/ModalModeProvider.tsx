@@ -1,8 +1,8 @@
 import { useState } from "react"
-import { ModalModeData, ModalModeSetProvider } from "../types"
+import { DataProviderProps, ModalModeData } from "../types"
 import { ModalModeContext } from "./ModalModeContext"
 
-export const ModalModeProvider = (props: ModalModeSetProvider) => {
+export const ModalModeProvider = (props: DataProviderProps) => {
   const [ modalModeData, setModalModeData ] = useState<ModalModeData>({ mode: 'CREATE', isOpen: false })
 
   return(

@@ -10,7 +10,6 @@ export const productListReducer = (state: ProductList, action: ProductAction) =>
       return state.filter(product => product.id !== action.payload)
 
     case "MODIFY_PRDUCT":
-      console.log(`Action Payload = ${action.payload}`)
       return state.map( product => {
         if(product.id === action.payload.id) return action.payload
         return product

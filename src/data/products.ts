@@ -31,7 +31,7 @@ export const products = JSON.stringify([
     "id": "5",
     "producto": "Cemento",
     "cantidad": 100,
-    "unidad": "Kilogramo",
+    "unidad": "kilogramo",
     "descripcion": "Cemento blanco"
   },
   {

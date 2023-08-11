@@ -3,8 +3,10 @@ import { ProductCardProps } from "../types"
 import { DeleteWarningAdvice } from "./DeleteWarningAdvice"
 import { useContext, useState } from "react"
 import { ModalModeContext } from "../context/ModalModeContext"
+import { SnackBarDataContext } from "../context/SnackBarDataContext"
 
 const boxStyle: SxProps<Theme> = {
+  backgroundColor: 'floralwhite',
   boxShadow: "0 3px 3px rgba(0, 0, 0, 0.3)",
   borderRadius: 2,
   p: 2,
@@ -15,6 +17,7 @@ export const ProductCard = (props: ProductCardProps): JSX.Element => {
   const [ modalWarnIsOpen, setModalWarnIsOpen ] = useState(false)
 
   const modalModeDataProvided = useContext(ModalModeContext)
+  const alertDataProvided = useContext(SnackBarDataContext)
 
   const deleteHandle = () => {
     setModalWarnIsOpen(true)
@@ -22,6 +25,7 @@ export const ProductCard = (props: ProductCardProps): JSX.Element => {
 
   const onConfirmHandle = () => {
     props.dispatch({type: 'DELETE_PRODUCT', payload: id})
+    alertDataProvided.setData({mode: 'deleted', name: producto})
     setModalWarnIsOpen(false)
   }
 
@@ -44,7 +48,6 @@ export const ProductCard = (props: ProductCardProps): JSX.Element => {
             <Button variant="outlined" onClick={() => onModifyHandle()}>Editar</Button>
             <Button variant="contained" onClick={() => deleteHandle()} color="error">Eliminar</Button>  
           </Stack>
-          
         </Stack>
       </Box>
     </>

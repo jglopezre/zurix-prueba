@@ -3,6 +3,8 @@ import { AppViewHeadersProps } from "../types"
 import { useContext } from "react"
 import { ModalModeContext } from "../context/ModalModeContext"
 
+
+
 export const AppViewHeader = (props: AppViewHeadersProps) => {
   const { title } = props
   const modalModeDataProvided = useContext(ModalModeContext)
